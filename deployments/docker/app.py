@@ -22,7 +22,7 @@ def submit():
         "Received AWS Secret Manager": aws_secret_manager,
         "Received Environment": environment
     }
-    
+    print(response_data)
     return jsonify(response_data), 200
 
 if __name__ == '__main__':
