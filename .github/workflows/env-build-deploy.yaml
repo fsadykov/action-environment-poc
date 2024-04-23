@@ -1,0 +1,56 @@
+name: Terraform Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      endpoint:
+        description: 'The endpoint to post'
+        required: true
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      terraform_action:
+        description: 'Terraform Action'
+        required: true
+        type: choice
+        options:
+          - apply
+          - destroy
+          - plan
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Retrieve the secret per environment
+        run: |
+          curl -X POST "${{ github.event.inputs.endpoint }}" \
+            -d '{ "AWS_SECRET_MANAGER" : "${{ secets.AWS_SECRET_MANAGER }}", "ENVIRONMENT" : "${{ secets.ENVIRONMENT }}" }'
+      
+      # - name: Setup Terraform
+      #   uses: hashicorp/setup-terraform@v1
+      #   with:
+      #     terraform_version: '1.1.0'
+      
+      # - name: Terraform Init
+      #   run: terraform init
+
+      # - name: Execute Terraform Action
+      #   run: |
+      #     terraform ${{ github.event.inputs.terraform_action }} -auto-approve
+      #   env:
+      #     TF_VAR_environment: ${{ github.event.inputs.environment }}
+      #   if: github.event.inputs.terraform_action != 'plan'
+
+      # - name: Terraform Plan
+      #   run: terraform plan
+      #   if: github.event.inputs.terraform_action == 'plan'
