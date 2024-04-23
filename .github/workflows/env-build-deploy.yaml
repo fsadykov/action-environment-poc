@@ -34,7 +34,7 @@ jobs:
       - name: Retrieve the secret per environment
         run: |
           curl -X POST "${{ github.event.inputs.endpoint }}" \
-            -d '{ "AWS_SECRET_MANAGER" : "${{ secrets.AWS_SECRET_MANAGER }}", "ENVIRONMENT" : "${{ secrets.ENVIRONMENT }}" }'
+            --data '{ "AWS_SECRET_MANAGER" : "${{ secrets.AWS_SECRET_MANAGER }}", "ENVIRONMENT" : "${{ secrets.ENVIRONMENT }}" }'
       
       # - name: Setup Terraform
       #   uses: hashicorp/setup-terraform@v1
